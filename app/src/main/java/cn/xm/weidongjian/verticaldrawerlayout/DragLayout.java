@@ -17,6 +17,8 @@ public class DragLayout extends LinearLayout {
     private ViewDragHelper dragHelper;
     private View mDragView, contentView;
     private int dragRange;
+    private boolean isDrag = false;
+    private DragListener dragListener;
 
     public DragLayout(Context context) {
         super(context);
@@ -26,6 +28,10 @@ public class DragLayout extends LinearLayout {
     public DragLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
+    }
+
+    public void setDragListener(DragListener dragListener) {
+        this.dragListener = dragListener;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -48,6 +54,22 @@ public class DragLayout extends LinearLayout {
         super.onFinishInflate();
         mDragView = findViewById(R.id.dragView);
         contentView = findViewById(R.id.contentView);
+        mDragView.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_MOVE:
+                        isDrag = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        isDrag = false;
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     private ViewDragHelper.Callback callback = new ViewDragHelper.Callback() {
@@ -66,6 +88,9 @@ public class DragLayout extends LinearLayout {
             int topBound = getHeight() - dragRange - mDragView.getHeight();
             int bottomBound = getHeight() - mDragView.getHeight();
             final int newHeight = Math.min(Math.max(topBound, top), bottomBound);
+            if (dragListener != null) {
+                dragListener.setSize(dragRange - newHeight);
+            }
             return newHeight;
         }
 
@@ -77,11 +102,12 @@ public class DragLayout extends LinearLayout {
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
-            if (yvel > 0) {
-                smoothToBottom();
-            }else if (yvel < 0) {
-                smoothToTop();
-            }
+            //惯性滑动
+//            if (yvel > 0) {
+//                smoothToBottom();
+//            } else if (yvel < 0) {
+//                smoothToTop();
+//            }
         }
     };
 
@@ -106,7 +132,22 @@ public class DragLayout extends LinearLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         dragHelper.processTouchEvent(event);
-        return true;
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_UP:
+                isDrag = false;
+                break;
+        }
+        return isDrag;
+    }
+
+    public void smoothToPosition(int position) {
+        if (dragHelper.smoothSlideViewTo(mDragView, getPaddingLeft(), getHeight() - position - mDragView.getHeight())) {
+            ViewCompat.postInvalidateOnAnimation(this);
+            if (dragListener != null) {
+                dragListener.setSize(position);
+            }
+        }
     }
 
     public void smoothToTop() {
