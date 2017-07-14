@@ -1,5 +1,6 @@
 package cn.xm.weidongjian.verticaldrawerlayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -41,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.open:
-                mDragLayout.smoothToPosition(300);
+//                mDragLayout.smoothToPosition(300);
+                startActivity(new Intent(this, ExerciseActivity.class));
                 break;
             case R.id.close:
                 mDragLayout.smoothToPosition(600);

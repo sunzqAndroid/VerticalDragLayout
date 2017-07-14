@@ -16,7 +16,8 @@ import android.widget.LinearLayout;
 public class DragLayout extends LinearLayout {
     private ViewDragHelper dragHelper;
     private View mDragView, contentView;
-    private int dragRange;
+    private int dragRange;//可拖拽的距离
+    private int dragY;//拖拽的距离
     private boolean isDrag = false;
     private DragListener dragListener;
 
@@ -88,8 +89,9 @@ public class DragLayout extends LinearLayout {
             int topBound = getHeight() - dragRange - mDragView.getHeight();
             int bottomBound = getHeight() - mDragView.getHeight();
             final int newHeight = Math.min(Math.max(topBound, top), bottomBound);
+            dragY = dragRange - newHeight;
             if (dragListener != null) {
-                dragListener.setSize(dragRange - newHeight);
+                dragListener.setSize(dragY);
             }
             return newHeight;
         }
@@ -120,8 +122,8 @@ public class DragLayout extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        mDragView.layout(0, getHeight() - mDragView.getHeight(), getWidth(), getHeight());
-        contentView.layout(0, getHeight(), getWidth(), getHeight() + dragRange);
+        mDragView.layout(0, getHeight() - mDragView.getHeight() - dragY, getWidth(), getHeight() - dragY);
+        contentView.layout(0, getHeight() - dragY, getWidth(), getHeight() + dragRange);
     }
 
     @Override
