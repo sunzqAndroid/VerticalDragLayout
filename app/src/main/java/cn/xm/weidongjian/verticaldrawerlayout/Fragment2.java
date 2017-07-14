@@ -45,7 +45,7 @@ public class Fragment2 extends Fragment implements DragListener {
         FragmentTransaction transaction = fm.beginTransaction();
         mScrollView = rootView.findViewById(R.id.scrollView);
 
-        mDragLayout = (DragLayout) rootView.findViewById(R.id.drawLayout);
+        mDragLayout = (DragLayout) rootView.findViewById(R.id.dragLayout);
         mDragLayout.setDragListener(this);
         mScrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

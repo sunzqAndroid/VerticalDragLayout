@@ -81,6 +81,7 @@ public class DragLayout extends LinearLayout {
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+            mDragView.layout((getWidth() - mDragView.getWidth()) / 2, getHeight() - mDragView.getHeight() - dragY, (getWidth() - mDragView.getWidth()) / 2 + mDragView.getWidth(), getHeight() - dragY);
             contentView.layout(0, top + mDragView.getHeight(), getWidth(), top + mDragView.getHeight() + dragRange);
         }
 
@@ -122,7 +123,7 @@ public class DragLayout extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        mDragView.layout(0, getHeight() - mDragView.getHeight() - dragY, getWidth(), getHeight() - dragY);
+        mDragView.layout((getWidth() - mDragView.getWidth()) / 2, getHeight() - mDragView.getHeight() - dragY, (getWidth() - mDragView.getWidth()) / 2 + mDragView.getWidth(), getHeight() - dragY);
         contentView.layout(0, getHeight() - dragY, getWidth(), getHeight() + dragRange);
     }
 
@@ -170,6 +171,5 @@ public class DragLayout extends LinearLayout {
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }
-
 }
 
