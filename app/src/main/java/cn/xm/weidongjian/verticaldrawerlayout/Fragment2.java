@@ -22,6 +22,7 @@ public class Fragment2 extends Fragment implements DragListener {
 
     private DragLayout mDragLayout;
     private View mScrollView;
+    private View mContainer;
     private int mContentHeight;
 
     @Nullable
@@ -44,6 +45,7 @@ public class Fragment2 extends Fragment implements DragListener {
         FragmentManager fm = getChildFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         mScrollView = rootView.findViewById(R.id.scrollView);
+        mContainer = rootView.findViewById(R.id.container);
 
         mDragLayout = (DragLayout) rootView.findViewById(R.id.dragLayout);
         mDragLayout.setDragListener(this);
@@ -55,7 +57,7 @@ public class Fragment2 extends Fragment implements DragListener {
             }
         });
         Fragment fragment = new Fragment1();
-        transaction.replace(R.id.contentView, fragment);
+        transaction.replace(R.id.container, fragment);
         transaction.commit();
     }
 
@@ -65,6 +67,9 @@ public class Fragment2 extends Fragment implements DragListener {
             ViewGroup.LayoutParams params = mScrollView.getLayoutParams();
             params.height = mContentHeight - height;
             mScrollView.setLayoutParams(params);
+            ViewGroup.LayoutParams params2 = mContainer.getLayoutParams();
+            params2.height = height;
+            mContainer.setLayoutParams(params2);
         }
     }
 }
